@@ -16,10 +16,12 @@ export function registerMicroApps<T extends object = {}>(
   lifeCycles?: FrameworkLifeCycles<T>,
 ) {
   // Each app only needs to be registered once
+  // 每个子应用都只需要注册一次
   const unregisteredApps = apps.filter(app => !microApps.some(registeredApp => registeredApp.name === app.name));
-
+  // 重写注册的子应用列表
   microApps = [...microApps, ...unregisteredApps];
 
+  // 遍历没有注册的子应用，调用singleSpa的注册
   unregisteredApps.forEach(app => {
     const { name, activeRule, loader = noop, props, ...appConfig } = app;
 
@@ -58,6 +60,7 @@ export function loadMicroApp<T extends object = {}>(
   });
 }
 
+// 全局的开始函数
 export function start(opts: FrameworkConfiguration = {}) {
   frameworkConfiguration = { prefetch: true, singular: true, sandbox: true, ...opts };
   const { prefetch, sandbox, singular, urlRerouteOnly, ...importEntryOpts } = frameworkConfiguration;
@@ -76,7 +79,7 @@ export function start(opts: FrameworkConfiguration = {}) {
       }
     }
   }
-
+  // 开始singlespa并且设置路由改变 就
   startSingleSpa({ urlRerouteOnly });
 
   frameworkStartedDefer.resolve();
